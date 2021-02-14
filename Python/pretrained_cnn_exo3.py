@@ -12,7 +12,7 @@ import os, sys
 import numpy as np
 
 
-base_dir = "/share/esir2/aci/img_data/cats_and_dogs_sampled/"
+base_dir = "C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/CatsAndDog/cats_and_dogs_sampled/"
 output_dir="./"
 train_dir = os.path.join(base_dir, 'train')
 valid_dir = os.path.join(base_dir, 'valid')
@@ -28,7 +28,7 @@ test_cats_dir = os.path.join(test_dir, 'cats')
 test_dogs_dir = os.path.join(test_dir, 'dogs')
 
 
-local_weights_file = '/share/esir2/aci/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+local_weights_file = 'C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 model_vgg16 = VGG16(include_top=False, weights=local_weights_file, pooling='max')
 
 
@@ -64,9 +64,10 @@ def extract_features(class_input_dir, class_id):
 
 
 if __name__ == "__main__":
-
-    start1 = timer()
+    model_vgg16.summary()
     
+    start1 = timer()
+    """
     cat_vgg16_feature_list_np, cat_y_train = extract_features(train_cats_dir,0)
     dog_vgg16_feature_list_np, dog_y_train = extract_features(train_dogs_dir,1)
 
@@ -75,7 +76,18 @@ if __name__ == "__main__":
 
     np.save(output_dir + "vgg16_train_descriptors.npy", vgg16_feature_list_np)
     np.save(output_dir + "vgg16_train_target.npy", y_train)
+    """
     
+    """
+    cat_vgg16_feature_list_np, cat_y_test = extract_features(test_cats_dir,0)
+    dog_vgg16_feature_list_np, dog_y_test = extract_features(test_dogs_dir,1)
+
+    vgg16_feature_list_np=np.concatenate((cat_vgg16_feature_list_np, dog_vgg16_feature_list_np))
+    y_test=np.concatenate((cat_y_test,dog_y_test))
+
+    np.save(output_dir + "vgg16_test_descriptors.npy", vgg16_feature_list_np)
+    """
+    np.save(output_dir + "vgg16_test_target.npy", y_test)
     end1 = timer()
 
     print("Train extraction Time: " + str(end1 - start1))

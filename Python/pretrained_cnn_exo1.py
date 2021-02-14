@@ -20,6 +20,9 @@ model_full = VGG16(weights='imagenet')
 
 
 # QUESTION 1 : Analyser le modele : model_full.summary()
+print("debut SUMMARY")
+model_full.summary()
+print("fin SUMMARY")
 # combien de couches de convolution ? de pooling ? de couches entierement connectées ? 
 # Quelle est la taille de la couche d'entree ? de sortie ? pourquoi ?
 # Combien y'a-t-il de parametres appris ?
@@ -27,7 +30,7 @@ model_full = VGG16(weights='imagenet')
 
 
 # Forward propagation : on fait passer une image dans le reseau
-img_path = '/share/esir2/aci/img_data/cats_and_dogs_sampled/train/cats/cat.83.jpg'
+img_path = 'C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/CatsAndDog/cats_and_dogs_sampled/train/dogs/dog.5059.jpg'
 img = image.load_img(img_path, target_size=(224, 224))
 img_data = image.img_to_array(img)
 
@@ -64,10 +67,10 @@ for i in range (5):
 # —> ideal for feature extraction.
 
 # Here we already have locally stored the weights
-local_weights_file = '/share/esir2/aci/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+local_weights_file = 'C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 pre_trained_model = VGG16(input_shape=(224, 224, 3),include_top=False, weights=None)
 pre_trained_model.load_weights(local_weights_file)
-#pre_trained_model.summary()
+pre_trained_model.summary()
 
 
 
@@ -80,7 +83,7 @@ print("last convolutionnal size : ",output.shape)
 
 modelfeatures1 = VGG16(include_top=False, weights=local_weights_file, pooling='avg')
 output_features1 = modelfeatures1.predict(img_data)
-
+modelfeatures1.summary()
 # QUESTION 4 : Quelle est la dimension de output_features1 ? Que vient-on de faire ?
 print("output_features1 : ",output_features1.shape)
 
@@ -90,6 +93,7 @@ print("output_features1 : ",output_features1.shape)
 modelfeatures2 = VGG16(weights=local_weights_file, include_top=False, pooling='max')
 output_features2 = modelfeatures2.predict(img_data)
 print("output_features2 : ",output_features2.shape)
+modelfeatures2.summary()
 
 # QUESTION 5 :
 # La dimension de 'output_features1' est-elle identique à 'output_features2' ? 
@@ -101,6 +105,7 @@ model_extractfeatures = Model(inputs=pre_trained_model.input, outputs=pre_traine
 block_04 = model_extractfeatures.predict(img_data)
 # QUESTION 6 : Quelle est la dimension de la sortie obtenue ?
 print("block_04: ",block_04.shape)
+model_extractfeatures.summary()
 
 
 # For tensorflow 2.X

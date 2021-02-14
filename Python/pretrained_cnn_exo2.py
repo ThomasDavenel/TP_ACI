@@ -15,7 +15,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 ######################
 
 # base pretrained CNN
-local_weights_file = '/share/esir2/aci/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+local_weights_file = 'C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/python/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
 pre_trained_model = VGG16(input_shape=(224, 224,3), include_top=False, weights=local_weights_file)
 
 
@@ -52,18 +52,19 @@ model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=0.0001),
               metrics=['acc'])
 
-
+model.summary()
 
 
 ######################
 # FEED THE MODEL WITH TRAINING DATA
 ######################
 
-base_dir = "/share/esir2/aci/img_data/cats_and_dogs_sampled/"
+base_dir = "C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/CatsAndDog/cats_and_dogs_sampled/"
 train_dir = os.path.join(base_dir, 'train')
 validation_dir = os.path.join(base_dir, 'valid')
 test_dir = os.path.join(base_dir, 'test')
 
+print("question 3")
 # QUESTION 3 : On s'interesse à un sous-echantillon du jeu de donnees "cats and dogs" (disponible sur Kaggle).
 # Combien y'a-t-il de classes ?
 # Combien y'a-t-il de donnees dans l'ensemble d'apprentissage ? de validation ? de test ?
@@ -93,8 +94,8 @@ validation_generator = datagen.flow_from_directory(validation_dir, target_size=(
 start = timer()
 history = model.fit_generator( # for keras/tensorflow 1.X
       train_generator,
-      steps_per_epoch=150,
-      epochs=2,
+      steps_per_epoch=1,
+      epochs=1,
       validation_data=validation_generator,
       validation_steps=50,
       verbose=1)

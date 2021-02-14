@@ -22,7 +22,7 @@ from sklearn.model_selection import cross_val_score
 ################################
 
 
-base_dir = "/share/esir2/aci/img_data/cats_and_dogs_sampled/"
+base_dir = "C:/Users/thoma/OneDrive/Bureau/Ecole/ESIR2/Semestre8/ACI/TP/CatsAndDog/cats_and_dogs_sampled/"
 output_dir="./"
 
 X_train = np.load(output_dir + "vgg16_train_descriptors.npy")
