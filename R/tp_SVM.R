@@ -1,5 +1,5 @@
 # Installation package pour libSVM
-# install.packages('e1071')
+install.packages('e1071')
 library(e1071)
 
 # ----- Chargement des fonctions utiles
@@ -23,7 +23,7 @@ str(dataset)
 # L'application de la commande table() au vecteur contenant les labels (colonne y de dataset) permet de déterminer
 # le nombre d'individus appartenant aux différentes classes.
 table(dataset$y)
-  
+
 
 # Affichage des données
 plot(dataset[which(dataset$y==0),1:2], col="red", xlim = c(0,20), ylim = c(0,20.2))
@@ -84,7 +84,7 @@ dessiner_marge(dataset, svm_hard, 0,20,0,20.5, c("red", "blue"))
 print(svm_hard$index) # les indices de ligne des vecteurs support dans dataset
 print(svm_hard$SV) # les vecteurs support (VS)
 print(svm_hard$coefs) # les coefficients de Lagrange associés à chaque VS
-                      # (alpha_i du cours) * u_i (classe du VS)
+# (alpha_i du cours) * u_i (classe du VS)
 print(svm_hard$rho) # the negative intercept, ie la constante du modèle (-w0 du cours)
 
 
@@ -105,12 +105,12 @@ print(svm_hard$rho) # the negative intercept, ie la constante du modèle (-w0 du
 # La frontière de décision est donnée par h(x) = 0 (c'est une droite dans le cas
 # du SVM linéaire en dimension 2, on la représentera tout à l'heure)
 
- 
+
 ### TODO: Calculer (en utilisant les commandes R ci dessus), la valeur de h(x) pour le premier 
 # individu de dataset (dataset[1,1:2]) (ou n'importe quel autre)
 # Aide: pour deux vecteurs u et v, le produit scalaire u.v peut s'écrire sum(u*v)
-
-
+h=svm_hard$coefs[1,1]*sum(svm_hard$SV[1,1:2]*dataset[1,1:2])+svm_hard$coefs[2,1]*sum(svm_hard$SV[2,1:2]*dataset[1,1:2])+svm_hard$coefs[3,1]*sum(svm_hard$SV[3,1:2]*dataset[1,1:2])-svm_hard$rho
+print(h)
 ###### Question 6:
 # Quelle est la décision que vous prenez alors pour cet individu ?
 
@@ -136,6 +136,14 @@ svm_hard$decision.values
 
 ### TODO: Apprendre un nouveau modèle avec cost = 1
 
+svm_hard_cost1 <- svm(y~.,data = dataset, kernel='linear',cost=1,type='C-classification', scale = F)
+summary(svm_hard_cost1)
+dessiner_marge(dataset, svm_hard_cost1, 0,20,0,20.5, c("red", "blue"))
+print(svm_hard_cost1$index) # les indices de ligne des vecteurs support dans dataset
+print(svm_hard_cost1$SV) # les vecteurs support (VS)
+print(svm_hard_cost1$coefs) # les coefficients de Lagrange associés à chaque VS
+# (alpha_i du cours) * u_i (classe du VS)
+print(svm_hard_cost1$rho) # the negative intercept, ie la constante du modèle (-w0 du cours)
 ###### Question 8:
 # (a) Combien de vecteurs supports contient ce nouveau modele ?
 # (b) Dessiner la nouvelle frontière et ses marges.
@@ -148,7 +156,14 @@ svm_hard$decision.values
 ### TODO: Mêmes questions pour un nouveau modele appris avec cost = 0.01
 
 
-
+svm_hard_cost2 <- svm(y~.,data = dataset, kernel='linear',cost=0.01,type='C-classification', scale = F)
+summary(svm_hard_cost2)
+dessiner_marge(dataset, svm_hard_cost2, 0,20,0,20.5, c("red", "blue"))
+print(svm_hard_cost2$index) # les indices de ligne des vecteurs support dans dataset
+print(svm_hard_cost2$SV) # les vecteurs support (VS)
+print(svm_hard_cost2$coefs) # les coefficients de Lagrange associés à chaque VS
+# (alpha_i du cours) * u_i (classe du VS)
+print(svm_hard_cost2$rho) # the negative intercept, ie la constante du modèle (-w0 du cours)
 
 
 ##################### Exercice 2#################################
@@ -163,7 +178,14 @@ exo2 = read.table("./data/exo2_SVM.txt", header = T)
 
 
 #  ----- Apprentissage d'un modèle SVM 
-### TODO
+svm_hard_cost <- svm(y~.,data = exo2, kernel='linear',cost=1000,type='C-classification', scale = F)
+summary(svm_hard_cost)
+dessiner_marge(exo2, svm_hard_cost, 0,20,0,20.5, c("red", "blue"))
+print(svm_hard_cost$index) # les indices de ligne des vecteurs support dans dataset
+print(svm_hard_cost$SV) # les vecteurs support (VS)
+print(svm_hard_cost$coefs) # les coefficients de Lagrange associés à chaque VS
+# (alpha_i du cours) * u_i (classe du VS)
+print(svm_hard_cost$rho) # the negative intercept, ie la constante du modèle (-w0 du cours)
 # Apprendre un modele SVM lineaire avec C = 1000 sur ces données
 # 
 # Afficher la frontière et les marges et garder la figure ouverte
@@ -203,10 +225,15 @@ load("./data/spam7.Rdata")
 
 ###### Question 1: (répondre en utilisant des commandes R)
 # (a) Combien y a t il d individus dans ces données ?
+print(nrow(spam7))
 # (b) Combien de variables décrivent les individus ?
-# (c) Quelle est la variable cible ? Combien de classes différentes y a t'il ?
-# (d) Combien y a t'il d'individus par classe ?
+print(ncol(spam7)-1)
 
+# (c) Quelle est la variable cible ? Combien de classes différentes y a t'il ?
+spam7[,7]
+# (d) Combien y a t'il d'individus par classe ?
+print(nrow(spam7[which(spam7[,7]=='y'),1:5]))
+print(nrow(spam7[which(spam7[,7]=='n'),1:5]))
 
 
 
@@ -247,13 +274,45 @@ test = spam7[index[(ntrain+nvalid+1):(ntrain+nvalid+ntest)],] # création du jeu
 
 ###### Question 3: Combien a t'il de vecteurs supports ?
 
-
+mod <- svm(yesno~.,data = train, kernel='linear',cost=1,type='C-classification', scale = T)
+summary(svm_hard_cost)
 
 # -----  Calcul de la performance sur l'ensemble d apprentissage
 # La commande suivante permet d'obtenir les prédictions faites par le modèle sur les données d'apprentissage
 p = predict(mod, train)
-print(p)
+res =0
+resY =0
+mauvaisePY=0
+for(i in 1:nrow(train)){
+  if(train[i,7]==p[i]){
+    res=res+1
+    if(train[i,7]=="y"){
+      resY=resY+1
+    }
+  }
+  else{
+    if(train[i,7]=="y"){
+      mauvaisePY=mauvaisePY+1
+    }
+  }
+}
+print("nombre de bonnes predictions")
+print(res)
 
+print("nombre de bonnes predictions sur Y")
+print(resY)
+
+print("nombre de bonnes predictions sur N")
+print(res-resY)
+
+print("nombre de mauvaise predictions")
+print(nrow(train)-res)
+
+print("nombre de mauvaise predictions sur Y")
+print(mauvaisePY)
+
+print("nombre de mauvaise predictions sur N")
+print(nrow(train)-res -mauvaisePY)
 
 ### TODO:
 # Calculer le nombre de prédictions correctes faites par ce modèle sur l'ensemble d'apprentissage
@@ -269,6 +328,40 @@ print(p)
 ### TODO, idem mais avec l'ensemble de validation
 ###### Question 5: idem mais avec l'ensemble de validation
 
+p = predict(mod, valid)
+res =0
+resY =0
+mauvaisePY=0
+for(i in 1:nrow(valid)){
+  if(valid[i,7]==p[i]){
+    res=res+1
+    if(valid[i,7]=="y"){
+      resY=resY+1
+    }
+  }
+  else{
+    if(valid[i,7]=="y"){
+      mauvaisePY=mauvaisePY+1
+    }
+  }
+}
+print("nombre de bonnes predictions")
+print(res)
+
+print("nombre de bonnes predictions sur Y")
+print(resY)
+
+print("nombre de bonnes predictions sur N")
+print(res-resY)
+
+print("nombre de mauvaise predictions")
+print(nrow(valid)-res)
+
+print("nombre de mauvaise predictions sur Y")
+print(mauvaisePY)
+
+print("nombre de mauvaise predictions sur N")
+print(nrow(valid)-res -mauvaisePY)
 
 
 
@@ -282,7 +375,31 @@ print(p)
 #   récuperer C[i], créer le modèle, calculer les erreurs
 #    ...
 #  }
-
+C = c(0.001,0.01,0.1,1,10,100)
+for(i in 1:length(C)){
+  mod <- svm(yesno~.,data = train, kernel='linear',cost=C[i],type='C-classification', scale = T)
+  print("c = ")
+  print( C[i])
+  p = predict(mod, train)
+  res=0
+  for(i in 1:nrow(train)){
+    if(train[i,7]!=p[i]){
+      res=res+1
+    }
+  }
+  print("erreur apprentissage: ")
+  print(res/nrow(train))
+  p = predict(mod, valid)
+  res=0
+  for(i in 1:nrow(valid)){
+    if(valid[i,7]!=p[i]){
+      res=res+1
+    }
+  }
+  print("erreur validation: ")
+  print(res/nrow(valid))
+  print("~~~~~~~~~~~~")
+}
 
 
 
@@ -304,7 +421,17 @@ dataset = read.table("./data/SepNonLineaire.txt", header = T)
 
 ###### Question 1: Inspecter les données (nb de variables, variable cible, nb d individus)
 
-### TODO: Séparer ce jeu en trois ensembles A/V/T
+nall = nrow(dataset) #total number of rows in data
+ntrain = floor(0.7 * nall) # number of rows for train: 70% (vous pouvez changer en fonction des besoins)
+nvalid = floor(0.15 * nall) # number of rows for valid: 15% (idem)
+ntest = nall - ntrain - nvalid # number of rows for test: le reste
+
+set.seed(20) # choix d une graine pour le tirage aléatoire
+index = sample(nall) # permutation aléatoire des nombres 1, 2, 3 , ... nall
+
+train = dataset[index[1:ntrain],] # création du jeu d'apprentissage
+valid = dataset[index[(ntrain+1):(ntrain+nvalid)],] # création du jeu de validation
+test = dataset[index[(ntrain+nvalid+1):(ntrain+nvalid+ntest)],] # création du jeu de test
 
 ###### Question 2: 
 # (a) Quelles sont les tailles des ensembles ?
@@ -323,9 +450,27 @@ points(valid[which(valid$y==1),1:2], col="blue", pch = 2)
 # ----- Apprentissage d'un SVM linéaire (pour essayer quand meme)
 # On essaye C = 1000 pour débuter
 ### TODO: Apprendre un modèle lineaire et calculer erreurs apprentissage/validation
-svm_model = 
+svm_model <- svm(y~.,data = train, kernel='linear',cost=1000,type='C-classification', scale = F)
+summary(svm_model)
+p = predict(svm_model, train)
+res=0
+for(i in 1:nrow(train)){
+  if(train[i,3]!=p[i]){
+    res=res+1
+  }
+}
+print("erreur apprentissage: ")
+print(res/nrow(train))
+p = predict(svm_model, valid)
+res=0
+for(i in 1:nrow(valid)){
+  if(valid[i,3]!=p[i]){
+    res=res+1
+  }
+}
+print("erreur validation: ")
+print(res/nrow(valid))
 
-  
 # Affichage de la frontière avec la fonction dessiner_frontiere_svm
 dessiner_frontiere_svm(train[,1:2], train$y, valid[,1:2], valid$y, svm_model, -3,4,-5,9, c("red", "blue"))
 # Paramètres : 
@@ -339,7 +484,31 @@ dessiner_frontiere_svm(train[,1:2], train$y, valid[,1:2], valid$y, svm_model, -3
 
 
 ### TODO: Essayer quelques autres valeurs de C et noter les erreurs d apprentissage et validation
-
+C = c(0.001,0.01,0.1,1,10,100)
+for(i in 1:length(C)){
+  mod <- svm(y~.,data = train, kernel='linear',cost=C[i],type='C-classification', scale = F)
+  print("c = ")
+  print( C[i])
+  p = predict(mod, train)
+  res=0
+  for(i in 1:nrow(train)){
+    if(train[i,3]!=p[i]){
+      res=res+1
+    }
+  }
+  print("erreur apprentissage: ")
+  print(res/nrow(train))
+  p = predict(mod, valid)
+  res=0
+  for(i in 1:nrow(valid)){
+    if(valid[i,3]!=p[i]){
+      res=res+1
+    }
+  }
+  print("erreur validation: ")
+  print(res/nrow(valid))
+  print("~~~~~~~~~~~~")
+}
 
 
 # ----- Apprentissage d'un SVM à Noyau
@@ -347,12 +516,42 @@ dessiner_frontiere_svm(train[,1:2], train$y, valid[,1:2], valid$y, svm_model, -3
 svm_model <- svm(y~.,data = train, kernel='radial',cost=1,type='C-classification', gamma = 1)
 
 ### TODO: dessiner la frontière associée à ce SVM
+dessiner_frontiere_svm(train[,1:2], train$y, valid[,1:2], valid$y, svm_model, -3,4,-5,9, c("red", "blue"))
 
 ###### Question 4: Calculer le nombre d erreurs apprentissage et validation
 
 
 ### TODO: Faire varier le gammma entre 0.01 et 2 et calculer les erreurs 
-
+gamma = c(0.01,0.1,0.2,0.4,0.6,0.8,1,1.2,1.4,1.6,1.8,2)
+C = c(0.001,0.01,0.1,1,10,100)
+for(idxC in 1:length(C)){
+  for(idxGamma in 1:length(gamma)){
+    mod <- svm(y~.,data = train, kernel='radial',cost=C[idxC],type='C-classification', gamma = gamma[idxGamma])
+    print("C = ")
+    print( C[idxC])
+    print("gamma = ")
+    print( gamma[idxGamma])
+    p = predict(mod, train)
+    res=0
+    for(i in 1:nrow(train)){
+      if(train[i,3]!=p[i]){
+        res=res+1
+      }
+    }
+    print("erreur apprentissage: ")
+    print(res/nrow(train))
+    p = predict(mod, valid)
+    res=0
+    for(i in 1:nrow(valid)){
+      if(valid[i,3]!=p[i]){
+        res=res+1
+      }
+    }
+    print("erreur validation: ")
+    print(res/nrow(valid))
+    print("~~~~~~~~~~~~")
+  }
+}
 ### TODO: Puis faire varier cost ET gamma (double boucle)
 
 ###### Question 5: 
@@ -367,5 +566,34 @@ svm_model <- svm(y~.,data = train, kernel='polynomial',cost=1,type='C-classifica
 
 ### TODO: Reprenez les mêmes questions qu'avec le noyau gaussien en faisant varier le degré (entre 2 et 5) ET le cost
 
-
+gamma = c(2,2.5,3,3.5,4,4.5,5)
+C = c(0.1,1,10,100)
+for(idxC in 1:length(C)){
+  for(idxGamma in 1:length(gamma)){
+    mod <- svm(y~.,data = train, kernel='radial',cost=C[idxC],type='C-classification', gamma = gamma[idxGamma])
+    print("C = ")
+    print( C[idxC])
+    print("gamma = ")
+    print( gamma[idxGamma])
+    p = predict(mod, train)
+    res=0
+    for(i in 1:nrow(train)){
+      if(train[i,3]!=p[i]){
+        res=res+1
+      }
+    }
+    print("erreur apprentissage: ")
+    print(res/nrow(train))
+    p = predict(mod, valid)
+    res=0
+    for(i in 1:nrow(valid)){
+      if(valid[i,3]!=p[i]){
+        res=res+1
+      }
+    }
+    print("erreur validation: ")
+    print(res/nrow(valid))
+    print("~~~~~~~~~~~~")
+  }
+}
 
